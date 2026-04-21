@@ -1,6 +1,6 @@
 name: Release
 
-on:
+'on':
   push:
     tags:
       - 'v*'
@@ -13,9 +13,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14     # Apple Silicon (arm64)
+          - os: macos-14
             arch: arm64
-          - os: macos-13     # Intel (x86_64)
+          - os: macos-13
             arch: x86_64
     runs-on: ${{ matrix.os }}
 
@@ -39,62 +39,6 @@ jobs:
             --hidden-import curl_cffi.requests \
             --noupx \
             assets/claude-usage.py
-
-      # ── Code-signing + notarization ────────────────────────────────────────
-      # Runs automatically when MACOS_CERTIFICATE secret is set.
-      # Required GitHub secrets:
-      #   MACOS_CERTIFICATE       - base64-encoded Developer ID .p12 certificate
-      #   MACOS_CERTIFICATE_PWD   - password for the .p12
-      #   APPLE_SIGNING_IDENTITY  - "Developer ID Application: Name (TEAMID)"
-      #   APPLE_ID                - your Apple ID email
-      #   APPLE_APP_PASSWORD      - app-specific password from appleid.apple.com
-      #   APPLE_TEAM_ID           - 10-character Team ID
-      # ─────────────────────────────────────────────────────────────────────
-
-      - name: Import signing certificate
-        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
-        env:
-          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        run: |
-          echo "$MACOS_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
-          security create-keychain -p "" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "" build.keychain
-          security import /tmp/certificate.p12 \
-            -k build.keychain \
-            -P "$MACOS_CERTIFICATE_PWD" \
-            -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
-          rm /tmp/certificate.p12
-
-      - name: Code-sign binary
-        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
-        run: |
-          codesign --force \
-            --sign "${{ secrets.APPLE_SIGNING_IDENTITY }}" \
-            --options runtime \
-            --entitlements entitlements.plist \
-            "dist/claude-usage-macos-${{ matrix.arch }}"
-          codesign --verify --verbose "dist/claude-usage-macos-${{ matrix.arch }}"
-
-      - name: Notarize binary
-        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          ditto -c -k --keepParent \
-            "dist/claude-usage-macos-${{ matrix.arch }}" \
-            /tmp/notarize.zip
-          xcrun notarytool submit /tmp/notarize.zip \
-            --apple-id "$APPLE_ID" \
-            --password "$APPLE_APP_PASSWORD" \
-            --team-id "$APPLE_TEAM_ID" \
-            --wait
-          xcrun stapler staple "dist/claude-usage-macos-${{ matrix.arch }}"
-          xcrun stapler validate "dist/claude-usage-macos-${{ matrix.arch }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
