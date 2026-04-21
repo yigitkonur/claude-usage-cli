@@ -32,7 +32,7 @@ jobs:
 
       - name: Build binary
         run: |
-          pyinstaller \
+          python -m PyInstaller \
             --onefile \
             --name "claude-usage-macos-${{ matrix.arch }}" \
             --hidden-import curl_cffi \
