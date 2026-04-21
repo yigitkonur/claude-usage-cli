@@ -1,1 +1,17 @@
+node_modules/
 .DS_Store
+*.log
+npm-debug.log*
+.env
+
+# PyInstaller build output
+dist/
+build/
+__pycache__/
+*.pyc
+
+# Never commit credentials or local state
+*.p12
+*.keychain
+state.json
+report.html

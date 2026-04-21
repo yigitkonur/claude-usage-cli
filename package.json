@@ -1,0 +1,42 @@
+{
+  "name": "claude-usage",
+  "version": "2.0.0",
+  "description": "Claude.ai usage tracker — monitor token limits across multiple accounts, inline in Raycast with an HTML dashboard",
+  "type": "module",
+  "bin": {
+    "claude-usage": "./bin/claude-usage.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "assets/"
+  ],
+  "dependencies": {
+    "@clack/prompts": "^0.9.0",
+    "picocolors": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude",
+    "anthropic",
+    "raycast",
+    "usage",
+    "token-limits",
+    "ai"
+  ],
+  "license": "MIT",
+  "author": "Yigit Konur",
+  "bugs": {
+    "url": "https://github.com/yigitkonur/claude-usage-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yigitkonur/claude-usage-cli.git"
+  },
+  "homepage": "https://github.com/yigitkonur/claude-usage-cli#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
