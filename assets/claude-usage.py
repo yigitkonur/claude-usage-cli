@@ -665,8 +665,6 @@ def render_cli_status(state: dict[str, Any]) -> str:
         lines.append("")
 
     lines.append(f"  {hr}")
-    lines.append(f"  {_DIM}Press ↵ Enter to open dashboard  ·  Ctrl+C to exit{_R}")
-    lines.append("")
     return "\n".join(lines)
 
 
