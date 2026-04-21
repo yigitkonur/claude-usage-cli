@@ -43,7 +43,7 @@ In terminal (colored dot bars, exits immediately):
 Downloads a prebuilt binary, no dependencies required:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yigitkonur/claude-usage-cli/main/install.sh | bash
+curl -fsSL https://github.com/yigitkonur/claude-usage-cli/releases/latest/download/install.sh | bash
 ```
 
 Then add your first account:

@@ -66,3 +66,4 @@ jobs:
             dist/claude-usage-macos-arm64/claude-usage-macos-arm64
             dist/claude-usage-macos-x86_64/claude-usage-macos-x86_64
             dist/SHA256SUMS
+            install.sh

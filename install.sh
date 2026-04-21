@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# claude-usage installer — curl -fsSL https://raw.githubusercontent.com/yigitkonur/claude-usage-cli/main/install.sh | bash
+# claude-usage installer — curl -fsSL https://github.com/yigitkonur/claude-usage-cli/releases/latest/download/install.sh | bash
 set -euo pipefail
 
 REPO="yigitkonur/claude-usage-cli"
