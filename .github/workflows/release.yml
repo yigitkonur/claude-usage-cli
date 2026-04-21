@@ -40,7 +40,19 @@ jobs:
             --noupx \
             assets/claude-usage.py
 
+      # ── Code-signing + notarization ────────────────────────────────────────
+      # Runs automatically when MACOS_CERTIFICATE secret is set.
+      # Required GitHub secrets:
+      #   MACOS_CERTIFICATE       - base64-encoded Developer ID .p12 certificate
+      #   MACOS_CERTIFICATE_PWD   - password for the .p12
+      #   APPLE_SIGNING_IDENTITY  - "Developer ID Application: Name (TEAMID)"
+      #   APPLE_ID                - your Apple ID email
+      #   APPLE_APP_PASSWORD      - app-specific password from appleid.apple.com
+      #   APPLE_TEAM_ID           - 10-character Team ID
+      # ─────────────────────────────────────────────────────────────────────
+
       - name: Import signing certificate
+        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
@@ -57,6 +69,7 @@ jobs:
           rm /tmp/certificate.p12
 
       - name: Code-sign binary
+        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
         run: |
           codesign --force \
             --sign "${{ secrets.APPLE_SIGNING_IDENTITY }}" \
@@ -66,6 +79,7 @@ jobs:
           codesign --verify --verbose "dist/claude-usage-macos-${{ matrix.arch }}"
 
       - name: Notarize binary
+        if: ${{ secrets.MACOS_CERTIFICATE != '' }}
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
