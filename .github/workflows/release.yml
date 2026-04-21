@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install build deps
-        run: uv pip install --system pyinstaller curl-cffi
+        run: uv pip install pyinstaller curl-cffi
 
       - name: Build binary
         run: |
